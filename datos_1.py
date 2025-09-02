@@ -1,26 +1,22 @@
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Cargar datos
+# Cargar CSV
 df = pd.read_csv("usuarios_limpiesa.csv")
 
-# Eliminar filas donde la edad está vacía
-df = df.dropna(subset=["edad"])
+# Nombre exacto de la columna de tiempo en tu archivo
+tiempo_col = "tiempo sesión"   # 👈 cámbialo si en tu CSV se llama distinto
 
-# Convertir edad a numérica
+# Limpiar datos
+df = df.dropna(subset=["edad", tiempo_col])
 df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
-df = df.dropna(subset=["edad"])
+df[tiempo_col] = pd.to_numeric(df[tiempo_col], errors="coerce")
+df = df.dropna(subset=["edad", tiempo_col])
 
-# Crear boxplot
-plt.figure(figsize=(10, 6))
-sns.boxplot(x="pais", y="edad", data=df, palette="pastel")
-
-# Personalizar gráfico
-plt.title("Distribución de edades por país", fontsize=14)
-plt.xlabel("País")
-plt.ylabel("Edad")
-plt.xticks(rotation=45)
-
-
+# Graficar
+plt.scatter(df["edad"], df[tiempo_col], alpha=0.6)
+plt.title("Relación entre Edad y Tiempo de Sesión")
+plt.xlabel("Edad")
+plt.ylabel("Tiempo de sesión (minutos)")
+plt.grid(True)
 plt.show()
